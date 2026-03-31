@@ -201,6 +201,27 @@
       })
     })
 
+    // Randomise all sliders on load
+    function randStep(min, max, step) {
+      const steps = Math.floor((max - min) / step)
+      return min + Math.round(Math.random() * steps) * step
+    }
+
+    sliders.forEach(({ id, parse }) => {
+      const el = document.getElementById(`sl-${id}`)
+      const val = document.getElementById(`val-${id}`)
+      const min = parseFloat(el.min), max = parseFloat(el.max), step = parseFloat(el.step)
+      const v = randStep(min, max, step)
+      el.value = v
+      val.textContent = v
+      params[id] = parse(v)
+    })
+
+    const initScale = randStep(parseFloat(scaleEl.min), parseFloat(scaleEl.max), parseFloat(scaleEl.step))
+    scaleEl.value = initScale
+    scaleVal.textContent = initScale.toFixed(1)
+    scene.style.transform = `scale(${initScale})`
+
     build()
   </script>
 </body>
