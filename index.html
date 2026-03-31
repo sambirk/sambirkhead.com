@@ -14,16 +14,22 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
+      gap: 16px;
+      padding: 16px;
       font-family: 'Aboreto', serif;
       color: #e8d5b7;
+      overflow-x: hidden;
     }
 
     #scene {
       transform-origin: center center;
+      max-width: 100%;
     }
 
     #scene svg {
       display: block;
+      max-width: 100%;
+      height: auto;
     }
 
     #controls {
@@ -37,6 +43,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-width: calc(100vw - 32px);
     }
 
     #controls h2 {
@@ -92,6 +99,35 @@
       height: 10px;
       background: #e8d5b7;
       border: none;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        place-items: start center;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      #controls {
+        position: static;
+        width: min(92vw, 360px);
+        order: 2;
+      }
+
+      #scene {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #controls {
+        padding: 12px;
+      }
+
+      .row label,
+      .row span {
+        font-size: 9px;
+      }
     }
   </style>
 </head>
@@ -217,7 +253,10 @@
       params[id] = parse(v)
     })
 
-    const initScale = randStep(parseFloat(scaleEl.min), parseFloat(scaleEl.max), parseFloat(scaleEl.step))
+    const isMobile = window.matchMedia('(max-width: 900px)').matches
+    const scaleMin = isMobile ? 0.3 : parseFloat(scaleEl.min)
+    const scaleMax = isMobile ? 2.2 : parseFloat(scaleEl.max)
+    const initScale = randStep(scaleMin, scaleMax, parseFloat(scaleEl.step))
     scaleEl.value = initScale
     scaleVal.textContent = initScale.toFixed(1)
     scene.style.transform = `scale(${initScale})`
