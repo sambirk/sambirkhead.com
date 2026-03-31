@@ -102,20 +102,38 @@
     }
 
     @media (max-width: 900px) {
+      html, body {
+        height: 100%;
+      }
+
       body {
-        place-items: start center;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        height: 100dvh;
+        overflow: hidden;
+        place-items: center;
+        padding: 10px;
       }
 
       #controls {
-        position: static;
-        width: min(92vw, 360px);
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        width: min(94vw, 420px);
+        max-height: 42dvh;
+        overflow: auto;
+        overscroll-behavior: contain;
         order: 2;
       }
 
       #scene {
+        width: 100%;
         order: 1;
+        display: grid;
+        place-items: center;
+      }
+
+      #scene svg {
+        max-height: calc(100dvh - 230px);
       }
     }
 
