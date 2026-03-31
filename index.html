@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sam Birkhead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0e0e0e;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: 'Aboreto', serif;
+      color: #e8d5b7;
+    }
+
+    #scene {
+      transform-origin: center center;
+    }
+
+    #scene svg {
+      display: block;
+    }
+
+    #controls {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #1a1410;
+      border: 1px solid #3a2e24;
+      padding: 14px 16px;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #controls h2 {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #7a6a5c;
+      margin-bottom: 2px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .row label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #a08060;
+      text-transform: uppercase;
+    }
+
+    .row span {
+      font-size: 10px;
+      color: #e8d5b7;
+      text-align: right;
+      min-width: 28px;
+    }
+
+    input[type=range] {
+      grid-column: 1 / -1;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 2px;
+      background: #3a2e24;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      background: #e8d5b7;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      background: #e8d5b7;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="scene"></div>
+
+  <div id="controls">
+    <h2>Settings</h2>
+
+    <div class="row">
+      <label>Radius</label><span id="val-radius">5.5</span>
+      <input type="range" id="sl-radius" min="1" max="9" step="0.5" value="5.5">
+    </div>
+    <div class="row">
+      <label>Angle</label><span id="val-angle">315</span>
+      <input type="range" id="sl-angle" min="0" max="359" step="1" value="315">
+    </div>
+    <div class="row">
+      <label>Distance</label><span id="val-distance">10</span>
+      <input type="range" id="sl-distance" min="4" max="30" step="1" value="10">
+    </div>
+    <div class="row">
+      <label>Tile</label><span id="val-tile">36</span>
+      <input type="range" id="sl-tile" min="16" max="60" step="2" value="36">
+    </div>
+    <div class="row">
+      <label>Font size</label><span id="val-font">20</span>
+      <input type="range" id="sl-font" min="8" max="40" step="1" value="20">
+    </div>
+    <div class="row">
+      <label>Scale</label><span id="val-scale">1.0</span>
+      <input type="range" id="sl-scale" min="0.3" max="10" step="0.1" value="1">
+    </div>
+  </div>
+
+  <script type="module">
+    import { Heerich } from 'https://cdn.jsdelivr.net/gh/meodai/heerich@main/src/heerich.js'
+
+    const letters = [...'SAMBIRKHEAD']
+
+    let params = {
+      radius:   5.5,
+      angle:    315,
+      distance: 10,
+      tile:     36,
+      font:     20,
+    }
+
+    let heerich = null
+
+    function build() {
+      const { radius, angle, distance, tile, font } = params
+      heerich = new Heerich({
+        tile: [tile, tile],
+        camera: { type: 'oblique', angle, distance },
+        style: { fill: 'none', stroke: 'none' }
+      })
+
+      const C = radius
+      const max = Math.ceil(radius * 2)
+      let idx = 0
+      for (let x = 0; x <= max; x++) {
+        for (let y = 0; y <= max; y++) {
+          for (let z = 0; z <= max; z++) {
+            const dx = x + 0.5 - C, dy = y + 0.5 - C, dz = z + 0.5 - C
+            if (dx*dx + dy*dy + dz*dz <= radius*radius) {
+              heerich.addBox({
+                position: [x, y, z],
+                size: [1, 1, 1],
+                opaque: false,
+                content: `<text font-family="Aboreto, serif" font-size="${font}" text-anchor="middle" dominant-baseline="central" fill="#e8d5b7">${letters[idx++ % letters.length]}</text>`
+              })
+            }
+          }
+        }
+      }
+
+      document.getElementById('scene').innerHTML = heerich.toSVG({ padding: 40 })
+    }
+
+    // Scale slider — CSS only, no rebuild
+    const scaleEl = document.getElementById('sl-scale')
+    const scaleVal = document.getElementById('val-scale')
+    const scene = document.getElementById('scene')
+    scaleEl.addEventListener('input', () => {
+      const s = parseFloat(scaleEl.value)
+      scaleVal.textContent = s.toFixed(1)
+      scene.style.transform = `scale(${s})`
+    })
+
+    // Wire up sliders
+    const sliders = [
+      { id: 'radius',   parse: parseFloat },
+      { id: 'angle',    parse: parseInt   },
+      { id: 'distance', parse: parseInt   },
+      { id: 'tile',     parse: parseInt   },
+      { id: 'font',     parse: parseInt   },
+    ]
+
+    sliders.forEach(({ id, parse }) => {
+      const el = document.getElementById(`sl-${id}`)
+      const val = document.getElementById(`val-${id}`)
+      el.addEventListener('input', () => {
+        params[id] = parse(el.value)
+        val.textContent = el.value
+        build()
+      })
+    })
+
+    build()
+  </script>
+</body>
+</html>
