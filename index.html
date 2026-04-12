@@ -212,7 +212,8 @@
           for (let z = 0; z <= max; z++) {
             const dx = x + 0.5 - C, dy = y + 0.5 - C, dz = z + 0.5 - C
             if (dx*dx + dy*dy + dz*dz <= radius*radius) {
-              heerich.addBox({
+              heerich.addGeometry({
+                type: 'box',
                 position: [x, y, z],
                 size: [1, 1, 1],
                 opaque: false,
