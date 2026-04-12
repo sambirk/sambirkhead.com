@@ -257,6 +257,56 @@
       })
     })
 
+    function animateToSecondState(durationMs = 10000) {
+      const animatedSliders = sliders.filter(({ id }) => id !== 'radius')
+      const startValues = {}
+      const endValues = {}
+
+      animatedSliders.forEach(({ id }) => {
+        const el = document.getElementById(`sl-${id}`)
+        startValues[id] = parseFloat(el.value)
+        endValues[id] = randStep(parseFloat(el.min), parseFloat(el.max), parseFloat(el.step))
+      })
+
+      const scaleStart = parseFloat(scaleEl.value)
+      const scaleEnd = randStep(parseFloat(scaleEl.min), parseFloat(scaleEl.max), parseFloat(scaleEl.step))
+
+      const t0 = performance.now()
+      let lastBuild = 0
+      const buildInterval = 80
+      const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
+
+      function tick(now) {
+        const linearT = Math.min((now - t0) / durationMs, 1)
+        const t = easeInOutCubic(linearT)
+
+        animatedSliders.forEach(({ id, parse }) => {
+          const el = document.getElementById(`sl-${id}`)
+          const val = document.getElementById(`val-${id}`)
+          const v = startValues[id] + (endValues[id] - startValues[id]) * t
+          el.value = v
+          val.textContent = String(Math.round(v))
+          params[id] = parse(el.value)
+        })
+
+        const scaleV = scaleStart + (scaleEnd - scaleStart) * t
+        scaleEl.value = scaleV
+        scaleVal.textContent = scaleV.toFixed(1)
+        scene.style.transform = `scale(${scaleV})`
+
+        if (now - lastBuild >= buildInterval || linearT === 1) {
+          build()
+          lastBuild = now
+        }
+
+        if (linearT < 1) {
+          requestAnimationFrame(tick)
+        }
+      }
+
+      requestAnimationFrame(tick)
+    }
+
     // Randomise all sliders on load
     function randStep(min, max, step) {
       const steps = Math.floor((max - min) / step)
@@ -282,6 +332,7 @@
     scene.style.transform = `scale(${initScale})`
 
     build()
+    animateToSecondState(5000)
   </script>
 </body>
 </html>
