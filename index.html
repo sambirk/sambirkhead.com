@@ -7,39 +7,65 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --base00: #2b303b;
+      --base01: #343d46;
+      --base02: #4f5b66;
+      --base03: #65737e;
+      --base04: #a7adba;
+      --base05: #c0c5ce;
+      --base06: #dfe1e8;
+      --base07: #eff1f5;
+      --base08: #bf616a;
+      --base09: #d08770;
+      --base0A: #ebcb8b;
+      --base0B: #a3be8c;
+      --base0C: #96b5b4;
+      --base0D: #8fa1b3;
+      --base0E: #b48ead;
+      --base0F: #ab7967;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #0e0e0e;
+      background: var(--base00);
       min-height: 100vh;
       display: grid;
       place-items: center;
       gap: 16px;
       padding: 16px;
-      font-family: 'Aboreto', serif;
-      color: #e8d5b7;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--base05);
       overflow-x: hidden;
     }
 
     #scene {
-      transform-origin: center center;
-      max-width: 100%;
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 0;
+      pointer-events: none;
     }
 
     #scene svg {
       display: block;
-      max-width: 100%;
+      max-width: none;
       height: auto;
+      text-rendering: geometricPrecision;
+      shape-rendering: geometricPrecision;
     }
 
     #controls {
       position: fixed;
       top: 16px;
       right: 16px;
-      background: #1a1410;
-      border: 1px solid #3a2e24;
+      z-index: 2;
+      background: var(--base01);
+      border: 1px solid var(--base02);
       padding: 14px 16px;
       width: 220px;
       display: flex;
@@ -51,30 +77,47 @@
     #controls h2 {
       font-size: 9px;
       letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #7a6a5c;
+      color: var(--base03);
       margin-bottom: 2px;
     }
 
     .row {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       align-items: center;
       gap: 8px;
+    }
+
+    .fixed-toggle {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--base0B);
+      cursor: pointer;
     }
 
     .row label {
       font-size: 10px;
       letter-spacing: 0.1em;
-      color: #a08060;
-      text-transform: uppercase;
+      color: var(--base04);
     }
 
     .row span {
       font-size: 10px;
-      color: #e8d5b7;
+      color: var(--base05);
       text-align: right;
       min-width: 28px;
+    }
+
+    .row.toggle {
+      grid-template-columns: 1fr auto;
+      margin-top: 2px;
+    }
+
+    .row.toggle input[type=checkbox] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--base0B);
+      cursor: pointer;
     }
 
     input[type=range] {
@@ -83,7 +126,7 @@
       appearance: none;
       width: 100%;
       height: 2px;
-      background: #3a2e24;
+      background: var(--base02);
       outline: none;
       cursor: pointer;
     }
@@ -93,13 +136,13 @@
       appearance: none;
       width: 10px;
       height: 10px;
-      background: #e8d5b7;
+      background: var(--base0B);
     }
 
     input[type=range]::-moz-range-thumb {
       width: 10px;
       height: 10px;
-      background: #e8d5b7;
+      background: var(--base0B);
       border: none;
     }
 
@@ -110,7 +153,7 @@
 
       body {
         height: 100dvh;
-        overflow: hidden;
+        overflow-x: hidden;
         place-items: center;
         padding: 10px;
       }
@@ -127,16 +170,6 @@
         order: 2;
       }
 
-      #scene {
-        width: 100%;
-        order: 1;
-        display: grid;
-        place-items: center;
-      }
-
-      #scene svg {
-        max-height: calc(100dvh - 230px);
-      }
     }
 
     @media (max-width: 520px) {
@@ -155,38 +188,59 @@
   <div id="scene"></div>
 
   <div id="controls">
-    <h2>Settings</h2>
+    <h2>Controls</h2>
 
     <div class="row">
-      <label>Radius</label><span id="val-radius">5.5</span>
-      <input type="range" id="sl-radius" min="1" max="9" step="0.5" value="5.5">
+      <label for="sl-hues">Hues</label><span id="val-hues">16</span>
+      <input type="checkbox" id="fx-hues" class="fixed-toggle" aria-label="Fix Hues" checked>
+      <input type="range" id="sl-hues" min="1" max="16" step="1" value="16">
     </div>
     <div class="row">
-      <label>Angle</label><span id="val-angle">315</span>
-      <input type="range" id="sl-angle" min="0" max="359" step="1" value="315">
+      <label for="sl-radius">Radius</label><span id="val-radius">5.5</span>
+      <input type="checkbox" id="fx-radius" class="fixed-toggle" aria-label="Fix Radius" checked>
+      <input type="range" id="sl-radius" min="1" max="10" step="0.5" value="5.5">
     </div>
     <div class="row">
-      <label>Distance</label><span id="val-distance">10</span>
-      <input type="range" id="sl-distance" min="4" max="30" step="1" value="10">
+      <label for="sl-angle">Angle</label><span id="val-angle">315</span>
+      <input type="checkbox" id="fx-angle" class="fixed-toggle" aria-label="Fix Angle">
+      <input type="range" id="sl-angle" min="0" max="359" step="0.1" value="315">
     </div>
     <div class="row">
-      <label>Tile</label><span id="val-tile">36</span>
-      <input type="range" id="sl-tile" min="16" max="60" step="2" value="36">
+      <label for="sl-distance">Distance</label><span id="val-distance">10</span>
+      <input type="checkbox" id="fx-distance" class="fixed-toggle" aria-label="Fix Distance">
+      <input type="range" id="sl-distance" min="4" max="30" step="0.1" value="10">
     </div>
     <div class="row">
-      <label>Font size</label><span id="val-font">20</span>
-      <input type="range" id="sl-font" min="8" max="40" step="1" value="20">
+      <label for="sl-tile">Tile</label><span id="val-tile">36</span>
+      <input type="checkbox" id="fx-tile" class="fixed-toggle" aria-label="Fix Tile">
+      <input type="range" id="sl-tile" min="16" max="60" step="0.1" value="36">
     </div>
     <div class="row">
-      <label>Scale</label><span id="val-scale">1.0</span>
-      <input type="range" id="sl-scale" min="0.3" max="10" step="0.1" value="1">
+      <label for="sl-font">Font size</label><span id="val-font">20</span>
+      <input type="checkbox" id="fx-font" class="fixed-toggle" aria-label="Fix Font size">
+      <input type="range" id="sl-font" min="8" max="20" step="0.1" value="20">
+    </div>
+    <div class="row">
+      <label for="sl-scale">Scale</label><span id="val-scale">1.0</span>
+      <input type="checkbox" id="fx-scale" class="fixed-toggle" aria-label="Fix Scale">
+      <input type="range" id="sl-scale" min="0.3" max="1.5" step="0.01" value="1">
+    </div>
+
+    <div class="row toggle">
+      <label for="tg-autoplay">Autoplay</label>
+      <input type="checkbox" id="tg-autoplay" checked>
+    </div>
+
+    <div class="row toggle" aria-live="polite">
+      <label>FPS</label>
+      <span id="val-fps">0.0</span>
     </div>
   </div>
 
   <script type="module">
     import { Heerich } from 'https://cdn.jsdelivr.net/gh/meodai/heerich@6c98e99467a91f6a6b614346ed1ce5c408f54b96/src/heerich.js'
 
-    const letters = [...'SAMBIRKHEAD']
+    const letters = [...'SamBirkhead']
 
     let params = {
       radius:   5.5,
@@ -194,118 +248,373 @@
       distance: 10,
       tile:     36,
       font:     20,
+      hues:     16,
     }
 
-    let heerich = null
+    const ALLOWED_HUES = [1, 2, 4, 8, 16]
+    const BASE16_SOLID_PALETTE = [
+      '#8fa1b3', // base0D blue default hue
+      '#d08770', // base09
+      '#ab7967', // base0F deep brown
+      '#bf616a', // base08
+      '#ebcb8b', // base0A
+      '#a3be8c', // base0B
+      '#96b5b4', // base0C
+      '#b48ead', // base0E
+      '#c0c5ce', // base05
+      '#dfe1e8', // base06
+      '#eff1f5', // base07
+      '#a7adba', // base04
+      '#65737e', // base03
+      '#4f5b66', // base02
+      '#343d46', // base01
+      '#2b303b', // base00
+    ]
 
-    function build() {
-      const { radius, angle, distance, tile, font } = params
-      heerich = new Heerich({
+    let heerich = null
+    let activeAnimation = null
+    let loopTimer = null
+    let currentScale = 1
+    let fpsRaf = null
+    let fpsFrames = 0
+    let fpsWindowStart = performance.now()
+
+    function createEngine({ angle, distance, tile }) {
+      return new Heerich({
         tile: [tile, tile],
         camera: { type: 'oblique', angle, distance },
         style: { fill: 'none', stroke: 'none' }
       })
+    }
 
+    function createHuePalette(hues) {
+      const count = Math.max(1, Math.round(hues))
+      return Array.from({ length: count }, (_, i) => BASE16_SOLID_PALETTE[i % BASE16_SOLID_PALETTE.length])
+    }
+
+    function createSphereVoxels(radius, font, hues) {
       const C = radius
       const max = Math.ceil(radius * 2)
+      const voxels = []
+      const palette = createHuePalette(hues)
+      const cycleSize = letters.length
       let idx = 0
+
       for (let x = 0; x <= max; x++) {
         for (let y = 0; y <= max; y++) {
           for (let z = 0; z <= max; z++) {
             const dx = x + 0.5 - C, dy = y + 0.5 - C, dz = z + 0.5 - C
             if (dx*dx + dy*dy + dz*dz <= radius*radius) {
-              heerich.addGeometry({
+              const cycleIndex = Math.floor(idx / cycleSize)
+              const fill = palette[cycleIndex % palette.length]
+              voxels.push({
                 type: 'box',
                 position: [x, y, z],
                 size: [1, 1, 1],
                 opaque: false,
-                content: `<text font-family="Aboreto, serif" font-size="${font}" text-anchor="middle" dominant-baseline="central" fill="#e8d5b7">${letters[idx++ % letters.length]}</text>`
+                content: `<text font-family="JetBrains Mono, monospace" font-size="${font}" text-anchor="middle" dominant-baseline="central" fill="${fill}">${letters[idx++ % letters.length]}</text>`
               })
             }
           }
         }
       }
 
+      return voxels.sort((a, b) => {
+        const [ax, ay, az] = a.position
+        const [bx, by, bz] = b.position
+        return az - bz || ay - by || ax - bx
+      })
+    }
+
+    function renderFrame(state, voxels) {
+      heerich = createEngine(state)
+      for (const voxel of voxels) {
+        heerich.addGeometry(voxel)
+      }
+
       document.getElementById('scene').innerHTML = heerich.toSVG({ padding: 40 })
+      applyScaleToSvg(currentScale)
+    }
+
+    function applyScaleToSvg(scaleValue) {
+      const svg = scene.querySelector('svg')
+      if (!svg) {
+        return
+      }
+
+      svg.style.width = `${(scaleValue * 100).toFixed(2)}%`
+      svg.style.height = 'auto'
+    }
+
+    function setScale(scaleValue) {
+      currentScale = scaleValue
+      scaleEl.value = String(scaleValue)
+      const stepText = String(scaleEl.step)
+      const decimals = stepText.includes('.') ? stepText.split('.')[1].length : 0
+      scaleVal.textContent = Number(scaleValue).toFixed(decimals)
+      applyScaleToSvg(scaleValue)
+    }
+
+    function isFixed(id) {
+      const toggle = document.getElementById(`fx-${id}`)
+      return toggle ? toggle.checked : false
+    }
+
+    function nearestAllowedHue(value) {
+      let best = ALLOWED_HUES[0]
+      let bestDelta = Math.abs(value - best)
+      for (const candidate of ALLOWED_HUES) {
+        const delta = Math.abs(value - candidate)
+        if (delta < bestDelta || (delta === bestDelta && candidate < best)) {
+          best = candidate
+          bestDelta = delta
+        }
+      }
+      return best
+    }
+
+    function randomAllowedHue() {
+      const idx = Math.floor(Math.random() * ALLOWED_HUES.length)
+      return ALLOWED_HUES[idx]
+    }
+
+    function hasAnyAnimatableTarget() {
+      const anySliderFree = sliders.some(({ id }) => !isFixed(id))
+      const scaleFree = !isFixed('scale')
+      return anySliderFree || scaleFree
+    }
+
+    function restartAutoplayIfNeeded() {
+      if (!autoplayEl.checked) {
+        return
+      }
+
+      if (!hasAnyAnimatableTarget()) {
+        autoplayEl.checked = false
+        stopAnimation()
+        return
+      }
+
+      stopAnimation()
+      animateToSecondState(5000)
+    }
+
+    function stopAnimation() {
+      if (activeAnimation !== null) {
+        cancelAnimationFrame(activeAnimation)
+        activeAnimation = null
+      }
+
+      if (loopTimer !== null) {
+        window.clearTimeout(loopTimer)
+        loopTimer = null
+      }
+    }
+
+    function build() {
+      renderFrame(params, createSphereVoxels(params.radius, params.font, params.hues))
     }
 
     // Scale slider — CSS only, no rebuild
+    const autoplayEl = document.getElementById('tg-autoplay')
     const scaleEl = document.getElementById('sl-scale')
     const scaleVal = document.getElementById('val-scale')
+    const fpsVal = document.getElementById('val-fps')
     const scene = document.getElementById('scene')
+
+    function startFpsCounter() {
+      if (fpsRaf !== null) {
+        return
+      }
+
+      function tickFps(now) {
+        fpsFrames += 1
+        const elapsed = now - fpsWindowStart
+        if (elapsed >= 500) {
+          const fps = (fpsFrames * 1000) / elapsed
+          fpsVal.textContent = fps.toFixed(1)
+          fpsFrames = 0
+          fpsWindowStart = now
+        }
+
+        fpsRaf = requestAnimationFrame(tickFps)
+      }
+
+      fpsRaf = requestAnimationFrame(tickFps)
+    }
+
+    function resetControlDefaults() {
+      document.querySelectorAll('#controls input[type=range]').forEach((input) => {
+        input.value = input.defaultValue
+      })
+
+      document.querySelectorAll('#controls input[type=checkbox]').forEach((input) => {
+        input.checked = input.defaultChecked
+      })
+    }
+
+    function syncParamsFromControls() {
+      sliders.forEach(({ id, parse }) => {
+        const el = document.getElementById(`sl-${id}`)
+        if (id === 'hues') {
+          const snapped = nearestAllowedHue(parseFloat(el.value))
+          el.value = String(snapped)
+          params[id] = snapped
+        } else {
+          params[id] = parse(el.value)
+        }
+        document.getElementById(`val-${id}`).textContent = formatByStep(id, params[id])
+      })
+    }
     scaleEl.addEventListener('input', () => {
       const s = parseFloat(scaleEl.value)
-      scaleVal.textContent = s.toFixed(1)
-      scene.style.transform = `scale(${s})`
+      setScale(s)
+      if (activeAnimation !== null) {
+        stopAnimation()
+      }
     })
 
     // Wire up sliders
     const sliders = [
       { id: 'radius',   parse: parseFloat },
-      { id: 'angle',    parse: parseInt   },
-      { id: 'distance', parse: parseInt   },
-      { id: 'tile',     parse: parseInt   },
-      { id: 'font',     parse: parseInt   },
+      { id: 'angle',    parse: parseFloat },
+      { id: 'distance', parse: parseFloat },
+      { id: 'tile',     parse: parseFloat },
+      { id: 'font',     parse: parseFloat },
+      { id: 'hues',     parse: parseFloat },
     ]
+
+    resetControlDefaults()
+    syncParamsFromControls()
+
+    function formatByStep(id, value) {
+      if (id === 'hues') {
+        return String(Math.round(value))
+      }
+
+      const step = parseFloat(document.getElementById(`sl-${id}`).step)
+      const stepText = String(step)
+      const decimals = stepText.includes('.') ? stepText.split('.')[1].length : 0
+      return Number(value).toFixed(decimals)
+    }
 
     sliders.forEach(({ id, parse }) => {
       const el = document.getElementById(`sl-${id}`)
       const val = document.getElementById(`val-${id}`)
       el.addEventListener('input', () => {
-        params[id] = parse(el.value)
-        val.textContent = el.value
+        if (id === 'hues') {
+          const snapped = nearestAllowedHue(parseFloat(el.value))
+          el.value = String(snapped)
+          params[id] = snapped
+        } else {
+          params[id] = parse(el.value)
+        }
+        val.textContent = formatByStep(id, params[id])
         build()
+
+        if (autoplayEl.checked) {
+          restartAutoplayIfNeeded()
+        } else {
+          stopAnimation()
+        }
       })
     })
 
-    function animateToSecondState(durationMs = 10000) {
-      const animatedSliders = sliders.filter(({ id }) => id !== 'radius')
-      const startValues = {}
-      const endValues = {}
+    document.querySelectorAll('.fixed-toggle').forEach((el) => {
+      el.addEventListener('input', () => {
+        if (autoplayEl.checked) {
+          restartAutoplayIfNeeded()
+        } else {
+          stopAnimation()
+        }
+      })
+    })
 
-      animatedSliders.forEach(({ id }) => {
+    autoplayEl.addEventListener('input', () => {
+      if (autoplayEl.checked) {
+        stopAnimation()
+        animateToSecondState(5000)
+      } else {
+        stopAnimation()
+      }
+    })
+
+    function animateToSecondState(durationMs = 10000) {
+      if (activeAnimation !== null) {
+        cancelAnimationFrame(activeAnimation)
+        activeAnimation = null
+      }
+
+      const startState = { ...params }
+      const endState = {}
+      sliders.forEach(({ id, parse }) => {
         const el = document.getElementById(`sl-${id}`)
-        startValues[id] = parseFloat(el.value)
-        endValues[id] = randStep(parseFloat(el.min), parseFloat(el.max), parseFloat(el.step))
+        if (isFixed(id)) {
+          endState[id] = startState[id]
+        } else if (id === 'hues') {
+          endState[id] = randomAllowedHue()
+        } else {
+          endState[id] = parse(randStep(parseFloat(el.min), parseFloat(el.max), parseFloat(el.step)))
+        }
       })
 
       const scaleStart = parseFloat(scaleEl.value)
-      const scaleEnd = randStep(parseFloat(scaleEl.min), parseFloat(scaleEl.max), parseFloat(scaleEl.step))
-
+      const scaleEnd = isFixed('scale')
+        ? scaleStart
+        : randStep(parseFloat(scaleEl.min), parseFloat(scaleEl.max), parseFloat(scaleEl.step))
       const t0 = performance.now()
-      let lastBuild = 0
-      const buildInterval = 80
-      const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
+      const easeInOutSine = (x) => -(Math.cos(Math.PI * x) - 1) / 2
 
       function tick(now) {
         const linearT = Math.min((now - t0) / durationMs, 1)
-        const t = easeInOutCubic(linearT)
+        const t = easeInOutSine(linearT)
 
-        animatedSliders.forEach(({ id, parse }) => {
+        const frameState = {
+          radius: startState.radius + (endState.radius - startState.radius) * t,
+          angle: startState.angle + (endState.angle - startState.angle) * t,
+          distance: startState.distance + (endState.distance - startState.distance) * t,
+          tile: startState.tile + (endState.tile - startState.tile) * t,
+          font: startState.font + (endState.font - startState.font) * t,
+          hues: startState.hues,
+        }
+
+        sliders.forEach(({ id, parse }) => {
           const el = document.getElementById(`sl-${id}`)
           const val = document.getElementById(`val-${id}`)
-          const v = startValues[id] + (endValues[id] - startValues[id]) * t
-          el.value = v
-          val.textContent = String(Math.round(v))
-          params[id] = parse(el.value)
+          const next = parse(frameState[id])
+          params[id] = next
+          el.value = String(next)
+          val.textContent = formatByStep(id, next)
         })
 
         const scaleV = scaleStart + (scaleEnd - scaleStart) * t
-        scaleEl.value = scaleV
-        scaleVal.textContent = scaleV.toFixed(1)
-        scene.style.transform = `scale(${scaleV})`
+        setScale(scaleV)
 
-        if (now - lastBuild >= buildInterval || linearT === 1) {
-          build()
-          lastBuild = now
-        }
+        renderFrame(frameState, createSphereVoxels(frameState.radius, frameState.font, frameState.hues))
 
         if (linearT < 1) {
-          requestAnimationFrame(tick)
+          activeAnimation = requestAnimationFrame(tick)
+        } else {
+          params = endState
+          sliders.forEach(({ id }) => {
+            const el = document.getElementById(`sl-${id}`)
+            const val = document.getElementById(`val-${id}`)
+            el.value = String(params[id])
+            val.textContent = formatByStep(id, params[id])
+          })
+          build()
+          activeAnimation = null
+
+          if (autoplayEl.checked) {
+            loopTimer = window.setTimeout(() => {
+              loopTimer = null
+              animateToSecondState(durationMs)
+            }, 300)
+          }
         }
       }
 
-      requestAnimationFrame(tick)
+      activeAnimation = requestAnimationFrame(tick)
     }
 
     // Randomise all sliders on load
@@ -315,25 +624,37 @@
     }
 
     sliders.forEach(({ id, parse }) => {
+      if (isFixed(id)) {
+        return
+      }
+
       const el = document.getElementById(`sl-${id}`)
       const val = document.getElementById(`val-${id}`)
-      const min = parseFloat(el.min), max = parseFloat(el.max), step = parseFloat(el.step)
-      const v = randStep(min, max, step)
-      el.value = v
-      val.textContent = v
-      params[id] = parse(v)
+      if (id === 'hues') {
+        const v = randomAllowedHue()
+        el.value = String(v)
+        val.textContent = formatByStep(id, v)
+        params[id] = v
+      } else {
+        const min = parseFloat(el.min), max = parseFloat(el.max), step = parseFloat(el.step)
+        const v = randStep(min, max, step)
+        el.value = v
+        val.textContent = formatByStep(id, parse(v))
+        params[id] = parse(v)
+      }
     })
 
     const isMobile = window.matchMedia('(max-width: 900px)').matches
     const scaleMin = isMobile ? 0.3 : parseFloat(scaleEl.min)
-    const scaleMax = isMobile ? 2.2 : parseFloat(scaleEl.max)
+    const scaleMax = parseFloat(scaleEl.max)
     const initScale = randStep(scaleMin, scaleMax, parseFloat(scaleEl.step))
-    scaleEl.value = initScale
-    scaleVal.textContent = initScale.toFixed(1)
-    scene.style.transform = `scale(${initScale})`
+    setScale(initScale)
 
     build()
-    animateToSecondState(5000)
+    startFpsCounter()
+    if (autoplayEl.checked) {
+      animateToSecondState(5000)
+    }
   </script>
 </body>
 </html>
