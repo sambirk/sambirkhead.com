@@ -59,23 +59,29 @@
       shape-rendering: geometricPrecision;
     }
 
-    #controls {
+    #sidebar {
       position: fixed;
       top: 16px;
       right: 16px;
       z-index: 2;
-      background: var(--base01);
-      border: 1px solid var(--base02);
-      padding: 14px 16px;
-      width: 220px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      width: 220px;
       max-width: calc(100vw - 32px);
     }
 
+    #controls {
+      background: var(--base01);
+      border: 1px solid var(--base02);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     #controls h2 {
-      font-size: 9px;
+      font-size: 11px;
       letter-spacing: 0.15em;
       color: var(--base03);
       margin-bottom: 2px;
@@ -96,13 +102,13 @@
     }
 
     .row label {
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 0.1em;
       color: var(--base04);
     }
 
     .row span {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--base05);
       text-align: right;
       min-width: 28px;
@@ -158,16 +164,25 @@
         padding: 10px;
       }
 
-      #controls {
+      #sidebar {
         position: fixed;
         left: 50%;
         bottom: 10px;
         transform: translateX(-50%);
         width: min(94vw, 420px);
+        top: auto;
+        right: auto;
+        flex-direction: column-reverse;
+      }
+
+      #contact {
+        display: none;
+      }
+
+      #controls {
         max-height: 42dvh;
         overflow: auto;
         overscroll-behavior: contain;
-        order: 2;
       }
 
     }
@@ -179,16 +194,50 @@
 
       .row label,
       .row span {
-        font-size: 9px;
+        font-size: 11px;
       }
     }
+
+    #contact {
+      background: var(--base01);
+      border: 1px solid var(--base02);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #contact p {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--base04);
+    }
+
+    #contact a {
+      color: var(--base0D);
+      text-decoration: none;
+    }
+
+    #contact a:hover {
+      color: var(--base0B);
+    }
+
+
   </style>
 </head>
 <body>
   <div id="scene"></div>
 
-  <div id="controls">
-    <h2>Controls</h2>
+  <div id="sidebar">
+    <aside id="contact">
+      <p>Sam Birkhead</p>
+      <p><a href="mailto:info@sambirkhead.com">Email</a> | <a href="https://keys.openpgp.org/vks/v1/by-fingerprint/A2A45FBF6AE624415807BCE17801C4C8E82AFBC7" target="_blank" rel="noopener">PGP</a></p>
+      <p><a href="https://www.linkedin.com/in/sambirkhead/" target="_blank" rel="noopener">LinkedIn</a></p>
+      <p><a href="https://github.com/sambirk/" target="_blank" rel="noopener">GitHub</a></p>
+    </aside>
+
+    <div id="controls">
+      <h2>Controls</h2>
 
     <div class="row">
       <label for="sl-hues">Hues</label><span id="val-hues">16</span>
@@ -235,6 +284,7 @@
       <label>FPS</label>
       <span id="val-fps">0.0</span>
     </div>
+  </div>
   </div>
 
   <script type="module">
