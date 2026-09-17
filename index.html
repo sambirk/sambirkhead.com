@@ -264,7 +264,7 @@
     <div class="row">
       <label for="sl-radius">Radius</label><span id="val-radius">5.5</span>
       <input type="checkbox" id="fx-radius" class="fixed-toggle" aria-label="Fix Radius" checked>
-      <input type="range" id="sl-radius" min="1" max="10" step="0.5" value="5.5">
+      <input type="range" id="sl-radius" min="1.5" max="10" step="0.5" value="5.5">
     </div>
     <div class="row">
       <label for="sl-angle">Angle</label><span id="val-angle">315</span>
@@ -364,24 +364,28 @@
       const max = Math.ceil(radius * 2)
       const voxels = []
       const palette = createHuePalette(hues)
-      const cycleSize = letters.length
-      let idx = 0
+      let columnIndex = 0
 
       for (let x = 0; x <= max; x++) {
         for (let y = 0; y <= max; y++) {
+          const fill = palette[columnIndex % palette.length]
+          let localIdx = 0
+
           for (let z = 0; z <= max; z++) {
             const dx = x + 0.5 - C, dy = y + 0.5 - C, dz = z + 0.5 - C
             if (dx*dx + dy*dy + dz*dz <= radius*radius) {
-              const cycleIndex = Math.floor(idx / cycleSize)
-              const fill = palette[cycleIndex % palette.length]
               voxels.push({
                 type: 'box',
                 position: [x, y, z],
                 size: [1, 1, 1],
                 opaque: false,
-                content: `<text font-family="JetBrains Mono, monospace" font-size="${font}" text-anchor="middle" dominant-baseline="central" fill="${fill}">${letters[idx++ % letters.length]}</text>`
+                content: `<text font-family="JetBrains Mono, monospace" font-size="${font}" text-anchor="middle" dominant-baseline="central" fill="${fill}">${letters[localIdx++ % letters.length]}</text>`
               })
             }
+          }
+
+          if (localIdx > 0) {
+            columnIndex++
           }
         }
       }
