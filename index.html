@@ -210,24 +210,31 @@
         padding: 8px 12px;
       }
 
+      /* All controls visible, no scrolling: two compact columns */
       #controls {
-        max-height: 36dvh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-y;
-        overscroll-behavior: contain;
-        scrollbar-width: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 16px;
+        row-gap: 4px;
+        padding: 8px 12px;
       }
 
-      #controls::-webkit-scrollbar {
-        display: none;
+      #controls h2 {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
       }
 
-      /* Vertical swipes on a slider scroll the panel; horizontal drags move it */
+      .row.toggle {
+        margin-top: 0;
+        min-height: 24px;
+      }
+
+      .row.toggle:last-child {
+        grid-column: 1 / -1;
+      }
+
       input[type=range] {
-        touch-action: pan-y;
-        height: 24px;
+        height: 20px;
         background: linear-gradient(var(--base02), var(--base02)) center / 100% 2px no-repeat;
       }
 
@@ -242,7 +249,7 @@
       }
 
       #scene {
-        padding-bottom: 48dvh;
+        padding-bottom: 46dvh;
       }
 
       #scene svg {
@@ -250,17 +257,6 @@
         max-height: 100%;
       }
 
-    }
-
-    @media (max-width: 520px) {
-      #controls {
-        padding: 12px;
-      }
-
-      .row label,
-      .row span {
-        font-size: 11px;
-      }
     }
 
   </style>
