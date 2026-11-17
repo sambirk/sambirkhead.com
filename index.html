@@ -209,13 +209,33 @@
 
       #controls {
         max-height: 36dvh;
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
         overscroll-behavior: contain;
         scrollbar-width: none;
       }
 
       #controls::-webkit-scrollbar {
         display: none;
+      }
+
+      /* Vertical swipes on a slider scroll the panel; horizontal drags move it */
+      input[type=range] {
+        touch-action: pan-y;
+        height: 24px;
+        background: linear-gradient(var(--base02), var(--base02)) center / 100% 2px no-repeat;
+      }
+
+      input[type=range]::-webkit-slider-thumb {
+        width: 14px;
+        height: 14px;
+      }
+
+      input[type=range]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
       }
 
       #scene {
